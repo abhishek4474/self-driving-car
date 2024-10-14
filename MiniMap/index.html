@@ -50,16 +50,17 @@
     <script src="sensor.js"></script>
     <script src="utils.js"></script>
     <script src="controls.js"></script>
-    <script src="car.js"></script> <!-- Make sure car.js is loaded before main.js -->
+    <script src="car.js"></script>
     <script src="main.js"></script>
 
     <script>
-        let car; // Define car globally
-        let models = []
-        // Initialize the car
+        let car;
+        let models = [];
+
         function initializeCar() {
-            car = new Car(100, 100, 50, 100, "AI"); // Adjust parameters as necessary
-        
+            car = new Car(100, 100, 50, 100, "AI");
+            car.fitness = 0; // Initialize fitness
+
             const savedBrain = localStorage.getItem("models");
             if (savedBrain) {
                 models = JSON.parse(savedBrain);
@@ -76,100 +77,53 @@
             }
         }
 
-        // Call initializeCar once the window has loaded
         window.onload = initializeCar;
 
-        function save() {
-            if (car && car.brain) {
-                const brain = {
-                    levels: car.brain.levels.map(level => {
-                        return {
-                            inputs: level.inputs,
-                            outputs: level.outputs,
-                            biases: level.biases,
-                            weights: level.weights
-                        };
-                    })
-                };
-                models.push(brain);
-                localStorage.setItem("models", JSON.stringify(models));
-                console.log("Car brain saved.");
-            } else {
-                console.error("Car or car brain is not defined.");
-            }
-        }
-
-        function discard() {
-            if (localStorage.getItem("carBrain")) {
-                localStorage.removeItem("carBrain");
-                console.log("Car brain discarded.");
-            } else {
-                console.error("No car brain found in local storage.");
-            }
-        }
 
         function simulateGeneration(cars, environment) {
-
             for (let step = 0; step < MAX_STEPS; step++) {
-                cars.forEach(car => {
+                cars.forEach((car, index) => {
                     const inputs = car.getSensorData(environment);
-                    const outputs = NeuralNetwork.feedForward(inputs, car.brain);
-                    car.control(outputs);
-                    car.update(environment);
-                });
 
-                // Check if all cars have crashed or reached the goal
-                if (cars.every(car => car.crashed || car.reachedGoal)) break;
-            }
-
-            cars.forEach(car => {
-                car.fitness = calculateFitness(car);
-            });
-
-            const newPopulation = NeuralNetwork.evolvePopulation(cars, SELECTION_SIZE, MUTATION_RATE);
-            cars.length = 0;
-            cars.push(...newPopulation);
-    
-        }
-
-        function calculateFitness(car) {
-            // Implement your fitness function here
-            // This could be based on distance traveled, time survived, etc.
-            // Example:
-            return car.distanceTraveled + (car.reachedGoal ? 1000 : 0) - (car.crashed ? 500 : 0);
-        }
-        function simulateGeneration(cars, environment) {
-            for (let step = 0; step < MAX_STEPS; step++) {
-                cars.forEach(car => {
-                    const inputs = car.getSensorData(environment);
-    
                     if (inputs) {
                         const outputs = NeuralNetwork.feedForward(inputs, car.brain);
                         car.control(outputs);
                     } else {
                         console.error("Sensor data returned null or undefined");
                     }
-    
+
                     car.update(environment);
                 });
-    
-                // Break if all cars have crashed or reached the goal
+
                 if (cars.every(car => car.crashed || car.reachedGoal)) {
                     break;
                 }
             }
-    
+
             cars.forEach(car => {
                 car.fitness = calculateFitness(car);
             });
-    
+
             const newPopulation = NeuralNetwork.evolvePopulation(cars, SELECTION_SIZE, MUTATION_RATE);
             cars.length = 0;
             cars.push(...newPopulation);
         }
-    
+
         function calculateFitness(car) {
-            return car.distanceTraveled + (car.reachedGoal ? 1000 : 0) - (car.crashed ? 500 : 0);
+            let fitness = car.fitness || 0; // Ensure fitness starts from a known value
+
+            // Add a penalty if the car is damaged.
+            if (car.damaged) {
+                fitness -= 100; // Penalty for crashing.
+            }
+
+            // Ensure the fitness is not negative.
+            fitness = Math.max(fitness, 0);
+
+            // Log the fitness for debugging.
+            console.log(`Car ID: ${car.id || 'unknown'}, Distance Traveled: ${car.fitness}, Damaged: ${car.damaged}, Calculated Fitness: ${fitness}`);
+
+            return fitness;
         }
     </script>
 </body>

@@ -39,9 +39,6 @@ class Level {
             this.weights[i] = new Array(outputCount).fill(0).map(() => Math.random()); // Initialize weights with random values
         }
 
-        console.log('Inputs initialized:', this.inputs);
-        console.log('Outputs initialized:', this.outputs);
-
         Level.#randomize(this);
     }
 
@@ -68,7 +65,7 @@ class Level {
                 sum += level.inputs[j] * level.weights[j][i];
             }
 
-            level.outputs[i] = sum > level.biases[i] ? 1 : 0;
+            level.outputs[i] = Math.max(0, sum + level.biases[i]);
         }
 
         return level.outputs;
