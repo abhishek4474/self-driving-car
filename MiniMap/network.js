@@ -15,8 +15,10 @@ class NeuralNetwork {
     }
 
     static mutate(network, amount = 1) {
+        // Use linear interpolation (lerp) to slightly change the bias.
+        // 'amount' controls how much the mutation affects the original bias.
         network.levels.forEach(level => {
-            for (let i = 0; i < level.biases.length; i++) {
+            for (let i = 0; i < level.biases.length; i++) { 
                 level.biases[i] = lerp(level.biases[i], Math.random() * 2 - 1, amount);
             }
             for (let i = 0; i < level.weights.length; i++) {
@@ -55,23 +57,23 @@ class Level {
     }
 
     static feedForward(givenInputs, level) {
-        for (let i = 0; i < level.inputs.length; i++) {
+        for (let i = 0; i < level.inputs.length; i++) {  // Sensor based Inputs
             level.inputs[i] = givenInputs[i];
         }
 
-        for (let i = 0; i < level.outputs.length; i++) {
+        for (let i = 0; i < level.outputs.length; i++) { // Hidden Layer computations
             let sum = 0;
             for (let j = 0; j < level.inputs.length; j++) {
                 sum += level.inputs[j] * level.weights[j][i];
             }
 
-            level.outputs[i] = Math.max(0, sum + level.biases[i]);
+            level.outputs[i] = Math.max(0, sum + level.biases[i]); // Outputs -> forward,left,right,reverse
         }
 
         return level.outputs;
     }
 }
 
-function lerp(a, b, t) {
+function lerp(a, b, t) { // Linear Interpolation 
     return a + (b - a) * t;
 }

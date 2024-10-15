@@ -25,12 +25,14 @@ const miniMap = new MiniMap(miniMapCanvas, world.graph, 300);
 const N=100;
 const cars=generateCars(N);
 let bestCar=cars[0];
+// Retrieving 'bestBrain' from  local storage
 if(localStorage.getItem("bestBrain")){
     for(let i=0;i<cars.length;i++){
         cars[i].brain=JSON.parse(
             localStorage.getItem("bestBrain"));
         if(i!=0){
-            NeuralNetwork.mutate(cars[i].brain,0.2);
+            NeuralNetwork.mutate(cars[i].brain,0.2); // Mutation rate of 0.2 to allow the other cars to slightly deviate from the "bestBrain".
+
         }
     }
 }
@@ -40,7 +42,7 @@ const roadBorders = world.roadBorders.map((s) => [s.p1, s.p2]);
 
 animate();
 
-function save(){
+function save(){ // Saving progress
     localStorage.setItem("bestBrain",
         JSON.stringify(bestCar.brain));
         console.log("Car brain saved.");

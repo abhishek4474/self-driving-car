@@ -23,6 +23,7 @@ class Sensor{
         }
     }
 
+    // To detect intersections between a given ray and obstacles
     #getReading(ray,roadBorders,traffic){
         let touches=[];
 
