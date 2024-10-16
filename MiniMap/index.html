@@ -55,17 +55,16 @@
 
     <script>
         let car;
-        let models = [];
 
         function initializeCar() {
             car = new Car(100, 100, 50, 100, "AI");
             car.fitness = 0; // Initialize fitness
-
-            const savedBrain = localStorage.getItem("models");
+        
+            const savedBrain = localStorage.getItem("bestBrain"); 
             if (savedBrain) {
-                models = JSON.parse(savedBrain);
-                car.brain = new NeuralNetwork(models[0].levels[0].inputs.length, models[0].levels[0].outputs.length);
-                car.brain.levels = models[0].levels.map(level => {
+                const bestBrain = JSON.parse(savedBrain); 
+                car.brain = new NeuralNetwork(bestBrain.levels[0].inputs.length, bestBrain.levels[0].outputs.length);
+                car.brain.levels = bestBrain.levels.map(level => {
                     const newLevel = new Level(level.inputs.length, level.outputs.length);
                     newLevel.biases = level.biases;
                     newLevel.weights = level.weights;
@@ -76,6 +75,7 @@
                 console.log("No saved car brain found.");
             }
         }
+        
 
         window.onload = initializeCar;
 
@@ -121,7 +121,7 @@
             fitness = Math.max(fitness, 0);
 
             // Log the fitness for debugging.
-            console.log(`Car ID: ${car.id || 'unknown'}, Distance Traveled: ${car.fitness}, Damaged: ${car.damaged}, Calculated Fitness: ${fitness}`);
+            console.log(Car ID: ${car.id || 'unknown'}, Distance Traveled: ${car.fitness}, Damaged: ${car.damaged}, Calculated Fitness: ${fitness});
 
             return fitness;
         }
