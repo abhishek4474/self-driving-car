@@ -55,17 +55,19 @@
 
     <script>
         let car;
-        let models = [];
 
         function initializeCar() {
             car = new Car(100, 100, 50, 100, "AI");
             car.fitness = 0; // Initialize fitness
 
-            const savedBrain = localStorage.getItem("models");
+            const savedBrain = localStorage.getItem("bestBrain");
             if (savedBrain) {
-                models = JSON.parse(savedBrain);
-                car.brain = new NeuralNetwork(models[0].levels[0].inputs.length, models[0].levels[0].outputs.length);
-                car.brain.levels = models[0].levels.map(level => {
+                const bestBrain = JSON.parse(savedBrain);
+                car.brain = new NeuralNetwork(
+                    bestBrain.levels[0].inputs.length,
+                    bestBrain.levels[0].outputs.length
+                );
+                car.brain.levels = bestBrain.levels.map(level => {
                     const newLevel = new Level(level.inputs.length, level.outputs.length);
                     newLevel.biases = level.biases;
                     newLevel.weights = level.weights;
@@ -78,7 +80,6 @@
         }
 
         window.onload = initializeCar;
-
 
         function simulateGeneration(cars, environment) {
             for (let step = 0; step < MAX_STEPS; step++) {
@@ -110,9 +111,8 @@
         }
 
         function calculateFitness(car) {
-            let fitness = car.fitness || 0; // Ensure fitness starts from a known value
+            let fitness = car.fitness || 0; 
 
-            // Add a penalty if the car is damaged.
             if (car.damaged) {
                 fitness -= 100; // Penalty for crashing.
             }
