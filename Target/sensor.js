@@ -115,6 +115,17 @@ class Sensor{
                 end.y
             );
             ctx.stroke();
+            if (this.readings[i]) {
+                const reading = this.readings[i];
+                ctx.font = "25px Arial";    // Set font size
+                ctx.fillStyle = "white";    // Set text color
+                ctx.textAlign = "center";   // Center the text
+                ctx.fillText(
+                    `Dist: ${Math.round(reading.distance)}px`,
+                    end.x,
+                    end.y - 10   // Adjust text position
+                );
+            }
         }
     }        
 }
