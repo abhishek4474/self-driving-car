@@ -12,7 +12,18 @@
     <div>
       <canvas id="networkCanvas"></canvas>
       <canvas id="miniMapCanvas"></canvas>
+      <canvas id="dashboardCanvas" ></canvas>
     </div>
+<!-- 
+    <div id="performanceDashboard" style="position: absolute; top: 20px; left: 20px; width: 250px; background: rgba(0, 0, 0, 0.7); color: white; padding: 10px; border-radius: 8px; z-index: 10;">
+        <h3>Performance Dashboard</h3>
+        <p>Distance to Target: <span id="distanceToTarget">0</span></p>
+        <p>Speed: <span id="carSpeed">0</span></p>
+        <p>Fitness Score: <span id="fitnessScore">0</span></p>
+        <p>Total Time: <span id="totalTime">0</span></p>
+        <p>Collision Status: <span id="collisionStatus">None</span></p>
+        <p>Position: (<span id="posX">0</span>, <span id="posY">0</span>)</p>
+    </div> --> 
 
     <script src="world/js/world.js"></script>
     <script src="world/js/viewport.js"></script>
@@ -51,6 +62,7 @@
 
     <script src="miniMap.js"></script>
     <script src="visualizer.js"></script>
+    <script src="dashboard.js"></script>
     <script src="network.js"></script>
     <script src="sensor.js"></script>
     <script src="utils.js"></script>

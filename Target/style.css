@@ -29,6 +29,12 @@ button:hover{
 #networkCanvas{
     background:black;
 }
+#dashboardCanvas {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 10;
+}
 #carCanvas{
     background:#2a5;
 }

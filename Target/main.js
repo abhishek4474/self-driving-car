@@ -75,7 +75,54 @@ function generateCars(N){
     }
     return cars;
 }
+let targetReachedTime = null;
 
+function updateDashboard() {
+    const scaleFactor = 0.5;
+
+    let distanceToTarget;
+    if (bestCar.reachedTarget) {
+        distanceToTarget = "Target Reached";
+    } else {
+        distanceToTarget = (Math.hypot(bestCar.x - target.center.x, bestCar.y - target.center.y) * scaleFactor).toFixed(2) + " meters";
+    }
+
+    const speed = bestCar.reachedTarget ? "0.00" : (bestCar.speed * scaleFactor).toFixed(2);
+    const fitnessScore = bestCar.fitness.toFixed(2);
+
+    let totalTime;
+    if (bestCar.reachedTarget && targetReachedTime === null) {
+        targetReachedTime = performance.now();
+    }
+    if (bestCar.reachedTarget) {
+        totalTime = ((targetReachedTime) / 1000).toFixed(2);
+    } else {
+        totalTime = (performance.now() / 1000).toFixed(2);
+    }
+
+    const collisionStatus = bestCar.damaged ? "Yes" : "No";
+    const posX = bestCar.x.toFixed(2);
+    const posY = bestCar.y.toFixed(2);
+
+    
+    
+    const dashboardData = {
+        distanceToTarget,
+        speed,
+        fitnessScore,
+        totalTime,
+        collisionStatus,
+        posX,
+        posY,
+       
+    };
+
+
+    drawDashboard(dashboardData);
+}
+
+
+let timerStopped = false; 
 function animate(time) {
     for (let i = 0; i < traffic.length; i++) {
         traffic[i].update(roadBorders, []);
@@ -85,6 +132,12 @@ function animate(time) {
     }
     bestCar = cars.find(c => c.fitness == Math.max(...cars.map(c => c.fitness)));
 
+    if (bestCar.reachedTarget && !timerStopped) {
+        timerStopped = true;  // Stop the timer
+        console.log("Target Reached! Timer stopped.");
+    }
+
+  
     world.cars = cars;
     world.bestCar = bestCar;
 
@@ -103,5 +156,7 @@ function animate(time) {
     networkCtx.lineDashOffset = -time / 50;
     networkCtx.clearRect(0, 0, networkCanvas.width, networkCanvas.height);
     Visualizer.drawNetwork(networkCtx, bestCar.brain);
+
+    updateDashboard();
     requestAnimationFrame(animate);
 }

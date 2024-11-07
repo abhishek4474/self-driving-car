@@ -51,8 +51,8 @@ class Car {
 
     update(roadBorders, traffic, target) {
         if (!this.damaged && !this.reachedTarget) {  // Skip update if reached target
+            this.fitness += this.speed
             this.#move();
-            this.fitness += this.speed;
             this.polygon = this.#createPolygon();
             this.damaged = this.#assessDamage(roadBorders, traffic);
             
@@ -63,6 +63,7 @@ class Car {
                 this.speed = 0;
             }
         }
+
 
         if (this.sensor && !this.reachedTarget) {
             this.sensor.update(roadBorders, traffic);

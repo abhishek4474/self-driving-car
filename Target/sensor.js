@@ -121,7 +121,7 @@ class Sensor{
                 ctx.fillStyle = "white";    // Set text color
                 ctx.textAlign = "center";   // Center the text
                 ctx.fillText(
-                    `Dist: ${Math.round(reading.distance)}px`,
+                    `${(reading.distance * 0.1).toFixed(1)}m`,
                     end.x,
                     end.y - 10   // Adjust text position
                 );
